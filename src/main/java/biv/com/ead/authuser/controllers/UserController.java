@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -29,7 +30,6 @@ public class UserController {
                 .status(HttpStatus.OK)
                 .body(userService.findAll());
     }
-
 
     @GetMapping("{/userId}")
     public ResponseEntity<Object> getOneUser(@PathVariable(value = "userId") UUID userId) {
@@ -54,7 +54,8 @@ public class UserController {
 
     @PutMapping("{/userId}")
     public ResponseEntity<Object> updateUser(@PathVariable(value = "userId") UUID userId,
-                                             @RequestBody @JsonView(UserDto.UserView.UserPut.class) UserDto userDto) {
+                                             @RequestBody @Validated(UserDto.UserView.UserPut.class)
+                                             @JsonView(UserDto.UserView.UserPut.class) UserDto userDto) {
         Optional<UserModel> userModelOptional = userService.findById(userId);
         if (!userModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
@@ -71,11 +72,13 @@ public class UserController {
 
     @PutMapping("{/userId/password}")
     public ResponseEntity<Object> updatePassword(@PathVariable(value = "userId") UUID userId,
-                                                 @RequestBody @JsonView(UserDto.UserView.PasswordPut.class) UserDto userDto) {
+                                                 @RequestBody @Validated(UserDto.UserView.PasswordPut.class)
+                                                 @JsonView(UserDto.UserView.PasswordPut.class) UserDto userDto) {
         Optional<UserModel> userModelOptional = userService.findById(userId);
         if (!userModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-        }if (!userModelOptional.get().getPassword().equals(userDto.getOldPassword())) {
+        }
+        if (!userModelOptional.get().getPassword().equals(userDto.getOldPassword())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Mismatched old password");
         } else {
             var userModel = userModelOptional.get();
@@ -89,7 +92,8 @@ public class UserController {
 
     @PutMapping("{/userId/image}")
     public ResponseEntity<Object> updateImage(@PathVariable(value = "userId") UUID userId,
-                                              @RequestBody @JsonView(UserDto.UserView.ImagePut.class) UserDto userDto) {
+                                              @RequestBody @Validated(UserDto.UserView.ImagePut.class)
+                                              @JsonView(UserDto.UserView.ImagePut.class) UserDto userDto) {
         Optional<UserModel> userModelOptional = userService.findById(userId);
         if (!userModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
