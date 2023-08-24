@@ -50,6 +50,13 @@
             <artifactId>specification-arg-resolver</artifactId>
             <version>3.1.0</version>
         </dependency>
+        <!--Hyperlinks to resources using Spring Hateoas-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-hateoas</artifactId>
+        </dependency>
+
+
     </dependencies>
 
     <build>
